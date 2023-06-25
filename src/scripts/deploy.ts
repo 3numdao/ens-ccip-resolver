@@ -1,4 +1,4 @@
-import { CoinbaseResolver__factory } from "../../src/types";
+import { ENSResolver__factory } from "../../src/types";
 import "@nomiclabs/hardhat-ethers";
 import hre from "hardhat";
 
@@ -6,7 +6,7 @@ async function main() {
   const { ethers } = hre;
 
   const deployer = (await ethers.getSigners())[0];
-  const resolverFactory = await ethers.getContractFactory("CoinbaseResolver");
+  const resolverFactory = await ethers.getContractFactory("ENSResolver");
 
   const constructorArgs: [string, string, string, string, string[]] = [
     deployer.address,
@@ -16,21 +16,18 @@ async function main() {
     [deployer.address],
   ];
 
-  const iCoinbaseResolver = CoinbaseResolver__factory.createInterface();
-  const constructorData = iCoinbaseResolver.encodeDeploy(constructorArgs);
+  const iENSResolver = ENSResolver__factory.createInterface();
+  const constructorData = iENSResolver.encodeDeploy(constructorArgs);
 
   console.log(
-    "Deploying CoinbaseResolver...\n\n" +
+    "Deploying ENSResolver...\n\n" +
       `Constructor arguments:\n${JSON.stringify(constructorArgs)}\n\n` +
       `Constructor calldata:\n${constructorData}\n`
   );
 
   const implementation = await resolverFactory.deploy(...constructorArgs);
   await implementation.deployed();
-  console.log(
-    "-> Deployed CoinbaseResolver contract at",
-    implementation.address
-  );
+  console.log("-> Deployed ENSResolver contract at", implementation.address);
 }
 
 main()
