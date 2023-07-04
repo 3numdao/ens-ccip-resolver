@@ -10,6 +10,8 @@ import { config as dotenvConfig } from "dotenv";
 import { HardhatUserConfig } from "hardhat/config";
 import { HttpNetworkUserConfig } from "hardhat/types";
 
+import "./src/tasks";
+
 dotenvConfig({ path: resolve(__dirname, "./.env") });
 
 const chainIds = {
@@ -31,15 +33,24 @@ if (!mnemonic && !privateKey) {
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 }
 
-const infuraApiKey: string | undefined = process.env.INFURA_API_KEY;
-if (!infuraApiKey) {
-  console.warn("INFURA_API_KEY is not set in the .env file");
+function providerUrl(network: string): string {
+  if (process.env.ALCHEMY_API_KEY) {
+    return `https://eth-${network}.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
+  } else if (process.env.INFURA_API_KEY) {
+    return `https://${network}.infura.io/v3/${process.env.INFURA_API_KEY}`;
+  } else {
+    console.warn(
+      "INFURA_API_KEY or ALCHEMY_API_KEY environment variable not set"
+    );
+  }
+
+  return "";
 }
 
 const etherscanApiKey: string | undefined = process.env.ETHERSCAN_API_KEY;
 
 function getChainConfig(network: keyof typeof chainIds): HttpNetworkUserConfig {
-  const url: string = "https://" + network + ".infura.io/v3/" + infuraApiKey;
+  const url: string = providerUrl(network);
   return {
     accounts: privateKey
       ? [privateKey]
@@ -69,9 +80,7 @@ const config: HardhatUserConfig = {
       chainId: chainIds.hardhat,
     },
     goerli: getChainConfig("goerli"),
-    kovan: getChainConfig("kovan"),
-    rinkeby: getChainConfig("rinkeby"),
-    ropsten: getChainConfig("ropsten"),
+    mainnet: getChainConfig("mainnet"),
   },
   paths: {
     artifacts: "./artifacts",

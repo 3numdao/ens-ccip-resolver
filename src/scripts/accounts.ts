@@ -2,11 +2,15 @@ import "@nomiclabs/hardhat-ethers";
 import hre from "hardhat";
 
 async function main() {
-  const accounts = await hre.ethers.getSigners();
+  const accounts = hre.config.networks.hardhat.accounts;
+  const index = 0; // first wallet, increment for next wallets
+  const wallet1 = hre.ethers.Wallet.fromMnemonic(
+    accounts.mnemonic,
+    accounts.path + `/${index}`
+  );
 
-  for (const account of accounts) {
-    console.log(await account.getAddress());
-  }
+  const privateKey1 = wallet1.privateKey;
+  console.log(`Private Key for ${wallet1.address}: ${privateKey1}`);
 }
 
 main()

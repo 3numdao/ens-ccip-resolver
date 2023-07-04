@@ -90,5 +90,5 @@ $ open coverage/index.html
 ### Deployment
 
 ```sh
-$ yarn deploy --network <NETWORK>
+$ yarn deploy-resolver --network <NETWORK> --url https://youendpoint/path/{sender}/{data} [--owner addr | --smanager addr | --gwmanager addr | --signer addr]
 ```
